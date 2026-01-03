@@ -180,15 +180,16 @@ module baseplate(
     union(){
       if (plateOptions == "cnclaser"){
         baseplate_cnclaser(
-          num_x=width, 
+          num_x=width,
           num_y=depth,
           magnetSize=magnetSize, 
           magnetZOffset=magnetZOffset,
           roundedCorners=roundedCorners);
       }      
       else {
+        echo("baseplate",width,depth,connectorPosition,connectorClipSize)
         baseplate_regular(
-          grid_num_x = width, 
+          grid_num_x = width,
           grid_num_y = depth,
           outer_num_x = outer_width,
           outer_num_y = outer_depth,
@@ -208,7 +209,7 @@ module baseplate(
           cornerRadius = plate_corner_radius,
           roundedCorners=roundedCorners)
           frame_connectors(
-            width = width, 
+            width = width,
             depth = depth,
             connectorPosition = connectorPosition,
             connectorClipEnabled = connectorClipEnabled,

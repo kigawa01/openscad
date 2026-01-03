@@ -262,8 +262,10 @@ else
   translate(pos)
   render_conditional(len(plate_list) > 1)//plate[2])
   set_environment(
-    width = plate[1].x[iPlate_size],
-    depth = plate[1].y[iPlate_size],
+//    width = plate[1].x[iPlate_size],
+    width = 0,
+//    depth = plate[1].y[iPlate_size],
+    depth = 0,
     render_position = Render_Position,
     pitch = pitch,
     help = enable_help,
@@ -282,8 +284,8 @@ else
       magnetSize = Enable_Magnets ? Magnet_Size : [0,0],
       magnetZOffset = Magnet_Z_Offset,
       magnetTopCover=Magnet_Top_Cover,
-      reducedWallHeight = Reduced_Wall_Height, 
-      reduceWallTaper = Reduced_Wall_Taper, 
+      reducedWallHeight = Reduced_Wall_Height,
+      reduceWallTaper = Reduced_Wall_Taper,
       cornerScrewEnabled  = Corner_Screw_Enabled,
       centerScrewEnabled = Center_Screw_Enabled,
       weightedEnable = Enable_Weight,

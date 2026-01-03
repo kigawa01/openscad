@@ -3,7 +3,9 @@
     "parameterSets": {
         "Nowy zestaw 1": {
             "Base_Plate_Options": "default",
+            "Connector_Clip_Enabled": "true",
             "Custom_Grid_Enabled": "false",
+            "Width": "[10, 0]",
             "cutx": "0",
             "cuty": "0"
         }
