@@ -61,7 +61,7 @@ chest_top_base_plate_enable_magnets = true;
 // (Zack's design uses magnet diameter of 6.5, 2.4)
 chest_top_base_plate_magnet_size = [6.5, 2.4];  // .1
 //Reduce the frame wall size to this value
-chest_top_base_plate_reduced_wall_height = -1; //0.1
+//chest_top_base_plate_reduced_wall_height = -1; //0.1
 chest_top_base_plate_reduced_wall_taper = false;
 connectorClipEnabled = true;
 
@@ -308,7 +308,7 @@ module basicDrawerPull(width, depth, height, radius){
 module chest(
   outerChest,
   totalH,
-  chestWallThickness,
+  chestWallThicknessX,
   enableTopGrid,
   topStyle,
   topWallPatternStyle,
@@ -329,14 +329,15 @@ module chest(
   drawerWallThickness,
   startH,
   clearance,
-  chestLegClearance
+  chestLegClearance,
+  gridOffsetY
 ){
   assert(is_list(clearance), "clearance must be a list");
   bottomGridOffset = [
-    chestWallThickness + clearance.x + (drawerOuterSizes[0].x-drawerInnerUnitSize.x*env_pitch().x)/2,
-    chestWallThickness + clearance.y + (drawerOuterSizes[0].y-drawerInnerUnitSize.y*env_pitch().y)/2, 0];
+    0,
+    gridOffsetY, 0];
 
-  topGridOffset = [bottomGridOffset.x - 0.25, bottomGridOffset.y - 0.25,0];
+  topGridOffset = [bottomGridOffset.x , bottomGridOffset.y,0];
 
   difference(){
     union(){
@@ -345,11 +346,11 @@ module chest(
 
       if(bottomGrid != "none") {
         baseHeight=0.7;
-//        translate(bottomGridOffset)
+        translate(bottomGridOffset)
         tz(-env_pitch().z*baseHeight+fudgeFactor)
         if(bottomGrid == "grid") grid_block(
           num_x=drawerInnerUnitSize.x+1,
-          num_y=drawerInnerUnitSize.y+1,
+          num_y=drawerInnerUnitSize.y,
           num_z=baseHeight,
           position = "zero",
           lipStyle = "none",    //"minimum" "none" "reduced" "reduced_double" "normal"
@@ -368,14 +369,14 @@ module chest(
       }
 
       if(topStyle == "baseplate") {
-        //translate(topGridOffset)
+        translate(topGridOffset)
         tz(totalH-fudgeFactor)
         baseplate(
           width = drawerInnerUnitSize.x+1,
-          depth = drawerInnerUnitSize.y+1,
+          depth = drawerInnerUnitSize.y,
 //          outer_width = outerChest.x/env_pitch().x,
 //          outer_depth = outerChest.y/env_pitch().y,
-//          outer_height = topBasePlateReducedWallHeight,
+          outer_height = topBasePlateReducedWallHeight,
           magnetSize = topBasePlateMagnetSize,
           plateOptions = "default",
           plate_corner_radius = 0,
@@ -400,17 +401,19 @@ module chestCutouts(
   startH,
   outerChest,
   clearance,
-  chestWallThickness,
+  chestWallThicknessX,
+  chestWallThicknessY,
+  chestWallThicknessZ,
   efficientBack,
   topWallPatternStyle,
   bottomWallpatternStyle,
   bottomWallpatternStyle,
   wall_pattern_settings
 ){
-  efficientBackThickness= chestWallThickness+fudgeFactor*2;
+  efficientBackThickness= chestWallThicknessX+fudgeFactor*2;
 
   partial_depth_pattern = wall_pattern_settings[iPatternDepth] != 0;
-  wallPattern_thickness = get_related_value(wall_pattern_settings[iPatternDepth], chestWallThickness)+fudgeFactor*2;
+  wallPattern_thickness = get_related_value(wall_pattern_settings[iPatternDepth], chestWallThicknessX)+fudgeFactor*2;
 
 
   for(iDrawer = [0 : drawerCount-1]){
@@ -422,15 +425,15 @@ module chestCutouts(
     //positions for wall cutouts
     back = [
       [innerchest.z-ridgeDepth*2,innerchest.x-ridgeDepth*2], //size
-      [innerchest.x/2+chestWallThickness, innerchest.y+chestWallThickness/2-efficientBackThickness/2, innerchest.z/2], //location
+      [innerchest.x/2+chestWallThicknessY, innerchest.y+chestWallThicknessY/2-efficientBackThickness/2, innerchest.z/2], //location
       [0,90,90], [0,0,0]]; //rotation , mirror
     left = [
       [innerchest.z-ridgeDepth*2,innerchest.y-ridgeDepth*2],    //size
-      [+chestWallThickness/2, (innerchest.y+chestWallThickness)/2, innerchest.z/2], //location
+      [+chestWallThicknessX/2, (innerchest.y+chestWallThicknessX)/2, innerchest.z/2], //location
       [0,90,0], [0,0,1]];//rotation, mirror
     right = [
       [innerchest.z-ridgeDepth*2,innerchest.y-ridgeDepth*2],//size
-      [innerchest.x+chestWallThickness*2-wallPattern_thickness/2+fudgeFactor, (innerchest.y+chestWallThickness)/2, innerchest.z/2],//location
+      [innerchest.x+chestWallThicknessX*2-wallPattern_thickness/2+fudgeFactor, (innerchest.y+chestWallThicknessX)/2, innerchest.z/2],//location
       [0,90,0], [0,0,0]];//rotation, mirror
 
     vpos = startH + drawerPosition(iDrawer, drawerOuterSizes, clearance, drawerSlideThickness);
@@ -438,7 +441,7 @@ module chestCutouts(
     locations = [back, left, right];
 
     color(colour_chest)
-    translate([chestWallThickness, -fudgeFactor, vpos])
+    translate([chestWallThicknessX, -fudgeFactor, vpos])
       cube([innerchest.x, innerchest.y+fudgeFactor, innerchest.z]);
 
     if(efficientBack)
@@ -479,11 +482,11 @@ module chestCutouts(
     //positions for wall cutouts
     back = [
       [outerChest.z-ridgeDepth*2,outerChest.x-ridgeDepth*2], //size
-      [outerChest.x/2, outerChest.y+chestWallThickness/2-efficientBackThickness/2, outerChest.z/2], //location
+      [outerChest.x/2, outerChest.y+chestWallThicknessY/2-efficientBackThickness/2, outerChest.z/2], //location
       [0,90,90], [0,0,0]]; //rotation , mirror
     left = [
       [outerChest.z-ridgeDepth*2,outerChest.y-ridgeDepth*2],    //size
-      [+chestWallThickness/2-wallPattern_thickness/2, outerChest.y/2, outerChest.z/2], //location
+      [+chestWallThicknessX/2-wallPattern_thickness/2, outerChest.y/2, outerChest.z/2], //location
       [0,90,0], [0,0,1]];//rotation, mirror
     right = [
       [outerChest.z-ridgeDepth*2,outerChest.y-ridgeDepth*2],//size
@@ -524,7 +527,7 @@ module chestCutouts(
 
   top = [
     [outerChest.x-ridgeDepth*2,outerChest.y-ridgeDepth*2], //size
-    [outerChest.x/2, outerChest.y/2, outerChest.z-chestWallThickness-fudgeFactor], //location
+    [outerChest.x/2, outerChest.y/2, outerChest.z-chestWallThicknessZ-fudgeFactor], //location
     [0,0,0],
     topWallPatternStyle]; //rotation
   bottom = [
@@ -589,7 +592,7 @@ module gridfinity_drawer(
     chestTopStyle = chest_top_style,
     chestTopWallPatternStyle=chest_top_wallpattern_style,
     chestTopBasePlateMagnetSize = chest_top_base_plate_enable_magnets? chest_top_base_plate_magnet_size : [0,0],
-    chestTopBasePlateReducedWallHeight = chest_top_base_plate_reduced_wall_height,
+//    chestTopBasePlateReducedWallHeight = chest_top_base_plate_reduced_wall_height,
     chestTopBasePlateReducedWallTaper = chest_top_base_plate_reduced_wall_taper,
     bottomGrid = chest_bottom_grid,
     bottomWallpatternStyle = chest_bottom_wallpattern_style,
@@ -619,11 +622,11 @@ module gridfinity_drawer(
     chestLegClearance = chest_leg_clearance){
 
   // Apply defaults
-  drawerSlideThickness =chestDrawerSlideThickness == 0 ? chestWallThickness : chestDrawerSlideThickness;
+  drawerSlideThickness =2;
   ridgeDepth = wallPatternBorderWidth < 0 ? chestWallThickness/abs(wallPatternBorderWidth) : wallPatternBorderWidth;
 
   // Calculate global dimensions
-  drawerInnerHeights = drawerEnableCustomSizes ? drawerCustomSizes : [for([0:drawerCount-1]) drawerInnerHeight];
+  drawerInnerHeights = drawerEnableCustomSizes ? drawerCustomSizes : [for(i=[0:drawerCount-1]) drawerInnerHeight];
   drawerCount = len(drawerInnerHeights);
 
   drawerInnerUnitSize = [drawerInnerWidth, drawerInnerDepth];
@@ -638,19 +641,38 @@ module gridfinity_drawer(
 //    drawerInnerSizes[i].y + (drawerWallThickness * 2),
 //    drawerInnerSizes[i].z + ((drawerBase == "floor" || drawerBase == "default") ? drawerWallThickness : 0)
 //  ]];
+  chestWallThicknessX=2;
+
+  drawerClearanceY = 0.25;
+  drawerInnerSizesY=(drawerInnerDepth*env_pitch().y) + drawerClearanceY;
+  drawerOuterSizeY=drawerInnerSizesY + (4);
+  chestWallThicknessY=2;
+
   drawerClearanceZ = 0.25;
+  gridHeight = 4.25;
+  chestTopBasePlateReducedWallHeight=gridHeight + 0.25;
+  drawerWallThicknessZ=1.5;
   drawerInnerSizeZ = [for(i = [0:drawerCount-1])
-    (drawerInnerHeights[i]*env_pitch().z) + drawerClearanceZ + 4.25 + (drawerBase == "default" ? drawerMagnetSize.y : 0)
+    (drawerInnerHeights[i]*env_pitch().z) + drawerClearanceZ + gridHeight
   ];
   drawerOuterSizeZ = [for(i = [0:drawerCount-1])
-    drawerInnerSizeZ[i] + ((drawerBase == "floor" || drawerBase == "default") ? drawerWallThickness : 0)
-  ];
+      drawerInnerSizeZ[i] + ((drawerBase == "floor" || drawerBase == "default") ? drawerWallThicknessZ : 0)
+    ];
+
+  chestWallThicknessZDefault=1.5;
+  chestWallThicknessZ=(
+      (ceil((
+        sum(drawerOuterSizeZ) + (chestClearance.z*2*drawerCount) + drawerSlideThickness * (drawerCount - 1)+chestTopBasePlateReducedWallHeight + chestWallThicknessZDefault*2
+      )/7)*7)
+        -sum(drawerOuterSizeZ)-(chestClearance.z*2*drawerCount)-drawerSlideThickness * (drawerCount - 1) - chestTopBasePlateReducedWallHeight
+  )/2;
 
   outerChest = [
-    (drawerInnerWidth+1)*env_pitch().x,
-    (drawerInnerDepth+1)*env_pitch().y,
-    sum(drawerOuterSizeZ) + (chestClearance.z*2*drawerCount) + drawerSlideThickness * (drawerCount - 1) + chestWallThickness*2];
+      (drawerInnerWidth+1)*env_pitch().x,
+      drawerOuterSizeY + (chestClearance.y * 2) + chestWallThicknessY,
+      sum(drawerOuterSizeZ) + (chestClearance.z*2*drawerCount) + drawerSlideThickness * (drawerCount - 1) + chestWallThicknessZ*2];
 
+  gridOffsetY = outerChest.y - (drawerInnerDepth*env_pitch().y);
 //  outerChest = [
 //    drawerOuterSizes[0].x + (chestClearance.x * 2) + (chestWallThickness * 2),
 //    drawerOuterSizes[0].y + (chestClearance.y * 2) + (chestWallThickness),
@@ -660,26 +682,26 @@ module gridfinity_drawer(
     drawerWallThicknessX = 10;
 
     drawerClearance = [
-        outerChest[0] - (chestWallThickness * 2) - (chestClearance.x * 2) - drawerWallThicknessX - (drawerInnerWidth*env_pitch().x),
-        0.25,
+        outerChest[0] - (chestWallThicknessX * 2) - (chestClearance.x * 2) - (drawerWallThicknessX*2) - (drawerInnerWidth*env_pitch().x),
+      drawerClearanceY,
       drawerClearanceZ
     ];
 
     drawerInnerSizes = [for(i = [0:drawerCount-1]) [
       (drawerInnerWidth*env_pitch().x) + drawerClearance.x,
-      (drawerInnerDepth*env_pitch().y) + drawerClearance.y,
+      drawerInnerSizesY,
           (drawerInnerHeights[i]*env_pitch().z) + drawerClearance.z + 4.25 + (drawerBase == "default" ? drawerMagnetSize.y : 0)
     ]];
 
     drawerOuterSizes = [for(i = [0:drawerCount-1]) [
       drawerInnerSizes[i].x + (drawerWallThicknessX * 2),
-      drawerInnerSizes[i].y + (4),
-        drawerOuterSizeZ[i].z + 0
+      drawerOuterSizeY,
+    echo("size",drawerOuterSizeZ[i])    drawerOuterSizeZ[i]
     ]];
 
   totalH = outerChest.z;
 
-  startH = chestWallThickness;
+  startH = chestWallThicknessX;
 
   translate(position == "center" ? [-outerChest.x/2,-outerChest.y/2,0] : [0,0,0])
   union(){
@@ -687,7 +709,7 @@ module gridfinity_drawer(
     chest(
       outerChest=outerChest,
       totalH=totalH,
-      chestWallThickness=chestWallThickness,
+      chestWallThicknessX=chestWallThicknessX,
       topStyle=chestTopStyle,
       topWallPatternStyle=chestTopWallPatternStyle,
       topBasePlateMagnetSize=chestTopBasePlateMagnetSize,
@@ -707,8 +729,9 @@ module gridfinity_drawer(
       drawerWallThickness=drawerWallThicknessX,
       startH=startH,
       clearance=chestClearance,
-      chestLegClearance = chestLegClearance)
-      chestCutouts(
+      chestLegClearance = chestLegClearance,
+      gridOffsetY=gridOffsetY
+    ) chestCutouts(
         drawerCount=drawerCount,
         drawerOuterSizes=drawerOuterSizes,
         ridgeDepth=ridgeDepth,
@@ -717,7 +740,9 @@ module gridfinity_drawer(
         startH=startH,
         outerChest=outerChest,
         clearance=chestClearance,
-        chestWallThickness=chestWallThickness,
+        chestWallThicknessX=chestWallThicknessX,
+        chestWallThicknessY=chestWallThicknessY,
+        chestWallThicknessZ=chestWallThicknessZ,
         efficientBack=efficientBack,
         topWallPatternStyle=chestTopWallPatternStyle,
         bottomWallpatternStyle = bottomWallpatternStyle,

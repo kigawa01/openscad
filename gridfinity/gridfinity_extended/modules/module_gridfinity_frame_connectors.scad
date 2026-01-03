@@ -74,7 +74,7 @@ module frame_connectors(
           if(connectorClipEnabled)
             ClipCutter(size=connectorClipSize, 
               height= 0.8, //height of bevel1_top
-              frameHeight = 4,
+              frameHeight = 4+1,
               clearance = connectorClipTolerance,
               cornerRadius = env_corner_radius(),
               straightWall=true);

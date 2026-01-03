@@ -13,16 +13,11 @@ include <gridfinity_extended/modules/polyround.scad>
 use <gridfinity_extended/modules/module_item_holder.scad>
 include <gridfinity_extended/modules/module_patterns.scad>
 
-baseplate(
-width = 1,
-depth = 1,
-outer_width = 1,
-outer_depth = 1,
-//outer_height = topBasePlateReducedWallHeight,
-//magnetSize = topBasePlateMagnetSize,
-plateOptions = "default",
-plate_corner_radius = 0,
-//reducedWallHeight = ,
-//reduceWallTaper = topBasePlateReducedWallTaper,
-connectorClipEnabled = true
+$gci=[1,1,1];
+$gc_count=[1,1, 1];
+$gc_size=[1,1, 1];
+$allowConnectors=[true,true,true,true];
+
+frame_connectors(
+connectorClipEnabled=true
 );
