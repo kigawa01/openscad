@@ -1,0 +1,11 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "Nowy zestaw 1": {
+            "Base_Plate_Options": "default",
+            "Custom_Grid_Enabled": "false",
+            "cutx": "0",
+            "cuty": "0"
+        }
+    }
+}

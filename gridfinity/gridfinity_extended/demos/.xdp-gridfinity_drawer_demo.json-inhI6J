@@ -1,0 +1,23 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "colour": "red",
+            "depth": "-1",
+            "height": "-1",
+            "help": "false",
+            "iscenarioCount": "1",
+            "iscenarioName": "0",
+            "iscenarioVp": "2",
+            "iscenariokv": "3",
+            "istepName": "0",
+            "istepkv": "1",
+            "multi_spacing": "[0.2, 0.5]",
+            "scenario": "drawer",
+            "setViewPort": "true",
+            "showtext": "true",
+            "stepIndex": "-1",
+            "width": "-1"
+        }
+    }
+}
