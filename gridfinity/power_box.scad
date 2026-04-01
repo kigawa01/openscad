@@ -14,11 +14,11 @@ use <gridfinity_extended/modules/module_gridfinity_block.scad>
 /*<!!start gridfinity_basic_cup!!>*/
 /* [General Cup] */
 // X dimension. grid units (multiples of 42mm) or mm.
-width = [1, 0]; //0.1
+width = [2, 0]; //0.1
 // Y dimension. grid units (multiples of 42mm) or mm.
-depth = [1, 0]; //0.1
+depth = [5, 0]; //0.1
 // Z dimension excluding. grid units (multiples of 7mm) or mm.
-height = [3, 0]; //0.1
+height = [12, 0]; //0.1
 // Fill in solid block (overrides all following options)
 filled_in = "disabled"; //[disabled, enabled, enabledfilllip:"Fill cup and lip"]
 // Wall thickness of outer walls. default, height < 8 0.95, height < 16 1.2, height > 16 1.6 (Zack's design is 0.95 mm)
@@ -217,23 +217,23 @@ floorpattern_pattern_brick_weight = 5;
 floorpattern_pattern_quality = 0.4;//0.1:0.1:2
 
 /* [Wall Cutout] */
-wallcutout_vertical ="disabled"; //[disabled, enabled, inneronly, wallsonly, frontonly, backonly]
+wallcutout_vertical ="enabled"; //[disabled, enabled, inneronly, wallsonly, frontonly, backonly]
 // wallcoutout position -0.5: disabled; Positive: GF units; Negative: ratio length/abs(value)
 wallcutout_vertical_position=[-2,-0.5,-0.5,-0.5];  //0.01
 //default will be binwidth/2
-wallcutout_vertical_width=0;
-wallcutout_vertical_angle=70;
+wallcutout_vertical_width=10;
+wallcutout_vertical_angle=80;
 //default will be binHeight. 0: radius, -1 floor, Positive: depth from top; Negative: ratio height/abs(value)
-wallcutout_vertical_height=0; //0.1
+wallcutout_vertical_height=75; //0.1
 wallcutout_vertical_corner_radius=5;
-wallcutout_horizontal ="disabled"; //[disabled, enabled, inneronly, wallsonly, leftonly, rightonly]
+wallcutout_horizontal ="enabled"; //[disabled, enabled, inneronly, wallsonly, leftonly, rightonly]
 // wallcoutout position -0.5: disabled; Positive: GF units; Negative: ratio length/abs(value)
 wallcutout_horizontal_position=[-2,-0.5,-0.5,-0.5];  //0.01
 //default will be binwidth/2
-wallcutout_horizontal_width=0;
-wallcutout_horizontal_angle=70;
+wallcutout_horizontal_width=10;
+wallcutout_horizontal_angle=80;
 //default will be binHeight
-wallcutout_horizontal_height=0; //0.1
+wallcutout_horizontal_height=50; //0.1
 wallcutout_horizontal_corner_radius=5;
 
 /* [Extendable] */
