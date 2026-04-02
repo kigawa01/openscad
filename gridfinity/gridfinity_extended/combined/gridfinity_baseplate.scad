@@ -2588,7 +2588,7 @@ module set_environment(
   height = 0,
   height_includes_lip = false,
   lip_enabled = false,
-  clearance = [0.5, 0.5, 0],
+  clearance = [0.95, 0.95, 0],
   setColour = "preview",
   help = false,
   render_position = "center", //[default,center,zero]

@@ -272,7 +272,7 @@ enable_help = "disabled"; //[info,debug,trace]
 // Work in progress,  Modify the default grid size. Will break compatibility
 pitch = [42,42,7];  //[0:1:9999]
 // clearance around the bin, will reduce the bin by this amount in mm.
-clearance = [0.5, 0.5, 0];
+clearance = [0.95, 0.95, 0];
 // Assign colours to the bin
 set_colour = "enable"; //[disabled, enable, preview, lip]
 // Where to render the model
